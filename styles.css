@@ -9,22 +9,27 @@
     src: url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 }
 
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
 body {
     font-family: 'Press Start 2P', cursive;
     background-color: #222;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
     color: white;
-    overflow: hidden;
 }
 
 .game-container {
     position: relative;
-    width: 800px;
-    height: 300px;
-    margin: 0 auto;
+    width: 100vw;
+    height: 100vh;
     background-color: #f0f0f0;
     overflow: hidden;
     border: 4px solid #555;
@@ -65,23 +70,73 @@ body {
 }
 
 #menu h1, #game-over h1 {
-    font-size: 2rem;
-    margin-bottom: 20px;
+    font-size: 3vw;
+    margin-bottom: 2vh;
     color: #fff;
     text-shadow: 3px 3px 0 #000;
 }
 
-#menu p, #game-over p {
-    font-size: 1rem;
-    margin-bottom: 15px;
+#menu p, #game-over p, .instructions {
+    font-size: 1.5vw;
+    margin-bottom: 2vh;
     color: #fff;
 }
 
-.instructions {
+.character-selection {
+    width: 90%;
+    max-width: 1000px;
     margin-top: 20px;
+}
+
+.characters {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.character {
+    width: 25%;
+    max-width: 200px;
+    margin: 10px;
     text-align: center;
-    font-size: 0.8rem;
-    color: #aaa;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+}
+
+.character img {
+    max-width: 50%;
+    height: auto;
+    margin-bottom: 5px;
+}
+
+.character p {
+    font-size: 0.6rem !important;
+    margin-bottom: 5px !important;
+}
+
+.character .ability {
+    font-size: 0.5rem !important;
+    color: #aaa !important;
+}
+
+.character.selected {
+    background-color: rgba(74, 144, 226, 0.3);
+    border: 2px solid #4a90e2;
+}
+
+.character.locked {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.character .lock {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
 }
 
 #game-ui {
@@ -146,65 +201,6 @@ body {
     0% { transform: translate(-50%, -50%) scale(1); }
     50% { transform: translate(-50%, -50%) scale(1.1); }
     100% { transform: translate(-50%, -50%) scale(1); }
-}
-
-.character-selection {
-    margin-top: 20px;
-    width: 80%;
-}
-
-.character-selection h2 {
-    font-size: 1rem;
-    text-align: center;
-    margin-bottom: 10px;
-}
-
-.characters {
-    display: flex;
-    justify-content: space-around;
-}
-
-.character {
-    width: 100px;
-    text-align: center;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    position: relative;
-}
-
-.character img {
-    width: 50px;
-    height: 50px;
-    margin-bottom: 5px;
-}
-
-.character p {
-    font-size: 0.6rem !important;
-    margin-bottom: 5px !important;
-}
-
-.character .ability {
-    font-size: 0.5rem !important;
-    color: #aaa !important;
-}
-
-.character.selected {
-    background-color: rgba(74, 144, 226, 0.3);
-    border: 2px solid #4a90e2;
-}
-
-.character.locked {
-    opacity: 0.7;
-    cursor: not-allowed;
-}
-
-.character .lock {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1.5rem;
 }
 
 .sound-button {

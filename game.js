@@ -1,12 +1,12 @@
 // Game constants
 const GRAVITY = 0.6;
 const JUMP_FORCE = -12;
-const GROUND_HEIGHT = 30;
 const OBSTACLE_SPEED_INITIAL = 6;
 const OBSTACLE_INTERVAL_MIN = 800;
 const OBSTACLE_INTERVAL_MAX = 2000;
 const EXAM_SESSION_DURATION = 10000; // 10 seconds
 const EXAM_SESSION_INTERVAL = 30000; // 30 seconds
+let GROUND_HEIGHT = 50; // Default value, will be updated in resizeCanvas
 
 // Game state
 let canvas, ctx;
@@ -23,8 +23,6 @@ let examSessionTimeout;
 let examSessionInterval;
 let selectedCharacter = 'stem';
 let soundMuted = false;
-
-// Game objects
 let player;
 let obstacles = [];
 let bonuses = [];
@@ -666,8 +664,27 @@ class Background {
 async function init() {
     canvas = document.getElementById('gameCanvas');
     ctx = canvas.getContext('2d');
-    canvas.width = 800;
-    canvas.height = 300;
+    
+    // Dynamically set canvas size to match container
+    function resizeCanvas() {
+        const container = document.querySelector('.game-container');
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+        
+        // Recalculate ground height based on canvas size
+        GROUND_HEIGHT = canvas.height * 0.1;
+        
+        // Reinitialize game objects if needed
+        if (player) {
+            player.y = canvas.height - GROUND_HEIGHT - player.height;
+        }
+    }
+    
+    // Initial resize
+    resizeCanvas();
+    
+    // Add resize listener
+    window.addEventListener('resize', resizeCanvas);
     
     // Use local sound files or fallback to online sources
     const soundSources = {
@@ -690,12 +707,6 @@ async function init() {
         bgMusic.loop = true;
     } catch (error) {
         console.error('Failed to load some sounds:', error);
-        // Optionally create dummy audio objects to prevent errors
-        jumpSound = new Audio();
-        collisionSound = new Audio();
-        bonusSound = new Audio();
-        examSessionSound = new Audio();
-        bgMusic = new Audio();
     }
     
     // Menu and UI setup
@@ -813,7 +824,10 @@ function startGame() {
     document.getElementById('game-ui').classList.remove('hidden');
     
     // Start background music
-    bgMusic.play();
+    if (bgMusic && bgMusic.paused) {
+        bgMusic.currentTime = 0;
+        bgMusic.play().catch(e => console.log("Background music play failed:", e));
+    }
     
     // Start game loop
     lastFrameTime = performance.now();
@@ -983,8 +997,12 @@ function updateUI() {
 function gameOver() {
     gameRunning = false;
     playSound(collisionSound);
-    bgMusic.pause();
-    bgMusic.currentTime = 0;
+    
+    // Safely pause background music
+    if (bgMusic) {
+        bgMusic.pause();
+        bgMusic.currentTime = 0;
+    }
     
     // Stop exam session timers
     clearTimeout(examSessionTimeout);
@@ -1020,7 +1038,10 @@ function continueGame() {
     document.getElementById('game-ui').classList.remove('hidden');
     
     // Resume background music
-    bgMusic.play();
+    if (bgMusic && bgMusic.paused) {
+        bgMusic.currentTime = 0;
+        bgMusic.play().catch(e => console.log("Background music play failed:", e));
+    }
     
     // Continue game loop
     lastFrameTime = performance.now();
@@ -1031,9 +1052,15 @@ function toggleSound() {
     const soundIcon = document.querySelector('.sound-icon');
     soundMuted = !soundMuted;
 
-    // Mute/unmute all sounds
+    // Mute/unmute all sounds with null checks
     [jumpSound, collisionSound, bonusSound, examSessionSound, bgMusic].forEach(sound => {
-        sound.muted = soundMuted;
+        if (sound) {
+            try {
+                sound.muted = soundMuted;
+            } catch (error) {
+                console.warn('Could not mute/unmute sound:', error);
+            }
+        }
     });
 
     // Update sound icon
@@ -1041,10 +1068,13 @@ function toggleSound() {
 }
 
 function playSound(sound) {
-    // Only play if not muted
-    if (!soundMuted) {
+    // Only play if not muted and sound is loaded
+    if (!soundMuted && sound && sound.readyState > 0) {
         sound.currentTime = 0;
-        sound.play().catch(e => console.log("Sound play failed:", e));
+        sound.play().catch(e => {
+            // Catch and log any play errors, but don't interrupt game flow
+            console.log("Sound play failed:", e);
+        });
     }
 }
 
