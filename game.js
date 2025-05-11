@@ -22,6 +22,7 @@ let examSessionActive = false;
 let examSessionTimeout;
 let examSessionInterval;
 let selectedCharacter = 'stem';
+let soundMuted = false;
 
 // Game objects
 let player;
@@ -36,6 +37,24 @@ let collisionSound;
 let bonusSound;
 let examSessionSound;
 let bgMusic;
+
+// Replace the existing sound loading section with this more robust approach
+function loadSound(src) {
+    return new Promise((resolve, reject) => {
+        const audio = new Audio();
+        audio.src = src;
+        audio.preload = 'auto';
+        
+        audio.addEventListener('canplaythrough', () => {
+            resolve(audio);
+        });
+        
+        audio.addEventListener('error', (e) => {
+            console.error('Error loading sound:', src, e);
+            reject(e);
+        });
+    });
+}
 
 class Player {
     constructor() {
@@ -644,19 +663,40 @@ class Background {
 }
 
 // Game initialization
-function init() {
+async function init() {
     canvas = document.getElementById('gameCanvas');
     ctx = canvas.getContext('2d');
     canvas.width = 800;
     canvas.height = 300;
     
-    // Load sounds
-    jumpSound = new Audio('https://assets.codepen.io/21542/howler-push.mp3');
-    collisionSound = new Audio('https://assets.codepen.io/21542/howler-sfx.mp3');
-    bonusSound = new Audio('https://assets.codepen.io/21542/howler-coin.mp3');
-    examSessionSound = new Audio('https://assets.codepen.io/21542/howler-power-up.mp3');
-    bgMusic = new Audio('https://assets.codepen.io/21542/howler-bling.mp3');
-    bgMusic.loop = true;
+    // Use local sound files or fallback to online sources
+    const soundSources = {
+        jumpSound: 'https://assets.codepen.io/21542/howler-push.mp3',
+        collisionSound: 'https://assets.codepen.io/21542/howler-sfx.mp3',
+        bonusSound: 'https://assets.codepen.io/21542/howler-coin.mp3',
+        examSessionSound: 'https://assets.codepen.io/21542/howler-power-up.mp3',
+        bgMusic: 'https://assets.codepen.io/21542/howler-bling.mp3'
+    };
+    
+    try {
+        // Attempt to load sounds
+        jumpSound = await loadSound(soundSources.jumpSound);
+        collisionSound = await loadSound(soundSources.collisionSound);
+        bonusSound = await loadSound(soundSources.bonusSound);
+        examSessionSound = await loadSound(soundSources.examSessionSound);
+        bgMusic = await loadSound(soundSources.bgMusic);
+        
+        // Configure looping for background music
+        bgMusic.loop = true;
+    } catch (error) {
+        console.error('Failed to load some sounds:', error);
+        // Optionally create dummy audio objects to prevent errors
+        jumpSound = new Audio();
+        collisionSound = new Audio();
+        bonusSound = new Audio();
+        examSessionSound = new Audio();
+        bgMusic = new Audio();
+    }
     
     // Menu and UI setup
     setupEventListeners();
@@ -677,6 +717,9 @@ function init() {
             continueGame();
         }
     });
+    
+    // Sound toggle button
+    document.getElementById('sound-toggle').addEventListener('click', toggleSound);
     
     // Show the menu screen
     document.getElementById('menu').classList.remove('hidden');
@@ -984,10 +1027,25 @@ function continueGame() {
     requestAnimationFrame(gameLoop);
 }
 
+function toggleSound() {
+    const soundIcon = document.querySelector('.sound-icon');
+    soundMuted = !soundMuted;
+
+    // Mute/unmute all sounds
+    [jumpSound, collisionSound, bonusSound, examSessionSound, bgMusic].forEach(sound => {
+        sound.muted = soundMuted;
+    });
+
+    // Update sound icon
+    soundIcon.textContent = soundMuted ? '🔇' : '🔊';
+}
+
 function playSound(sound) {
-    // Reset sound to beginning and play
-    sound.currentTime = 0;
-    sound.play().catch(e => console.log("Sound play failed:", e));
+    // Only play if not muted
+    if (!soundMuted) {
+        sound.currentTime = 0;
+        sound.play().catch(e => console.log("Sound play failed:", e));
+    }
 }
 
 // Initialize game when the page loads
