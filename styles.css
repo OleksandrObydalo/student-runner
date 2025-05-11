@@ -1,0 +1,209 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: 'PixelFont';
+    src: url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+}
+
+body {
+    font-family: 'Press Start 2P', cursive;
+    background-color: #222;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: white;
+    overflow: hidden;
+}
+
+.game-container {
+    position: relative;
+    width: 800px;
+    height: 300px;
+    margin: 0 auto;
+    background-color: #f0f0f0;
+    overflow: hidden;
+    border: 4px solid #555;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+#gameCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#game-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    pointer-events: auto;
+}
+
+#menu h1, #game-over h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #fff;
+    text-shadow: 3px 3px 0 #000;
+}
+
+#menu p, #game-over p {
+    font-size: 1rem;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+.instructions {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+#game-ui {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 0.8rem;
+    color: #000;
+    display: flex;
+    flex-direction: column;
+    pointer-events: none;
+}
+
+#score-container, #knowledge-container, #semester-container {
+    margin-bottom: 5px;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #4a90e2;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    pointer-events: auto;
+    font-size: 0.8rem;
+}
+
+.button:hover {
+    background-color: #357ae8;
+}
+
+.button .cost {
+    display: block;
+    font-size: 0.6rem;
+    margin-top: 5px;
+    color: #aaa;
+}
+
+#exam-session-alert {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 0, 0, 0.7);
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    color: white;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.1); }
+    100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+.character-selection {
+    margin-top: 20px;
+    width: 80%;
+}
+
+.character-selection h2 {
+    font-size: 1rem;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.characters {
+    display: flex;
+    justify-content: space-around;
+}
+
+.character {
+    width: 100px;
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+}
+
+.character img {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 5px;
+}
+
+.character p {
+    font-size: 0.6rem !important;
+    margin-bottom: 5px !important;
+}
+
+.character .ability {
+    font-size: 0.5rem !important;
+    color: #aaa !important;
+}
+
+.character.selected {
+    background-color: rgba(74, 144, 226, 0.3);
+    border: 2px solid #4a90e2;
+}
+
+.character.locked {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.character .lock {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.5rem;
+}
+
