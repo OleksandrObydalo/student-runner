@@ -207,61 +207,160 @@ class Obstacle {
         this.x -= speed;
     }
 
+    drawElement(element, offsetX) {
+        // Improved drawing method with more clear labels
+        switch (element.type) {
+            case 'window':
+                ctx.fillStyle = '#87ceeb';
+                ctx.fillRect(offsetX + element.x, element.y, element.width, element.height);
+                ctx.strokeStyle = '#555';
+                ctx.lineWidth = 3;
+                ctx.strokeRect(offsetX + element.x, element.y, element.width, element.height);
+                ctx.strokeRect(offsetX + element.x, element.y, element.width/2, element.height/2);
+                ctx.strokeRect(offsetX + element.x + element.width/2, element.y, element.width/2, element.height/2);
+                break;
+            case 'bookshelf':
+                ctx.fillStyle = '#8b4513';
+                ctx.fillRect(offsetX + element.x, element.y, element.width, element.height);
+                // Draw books
+                for (let i = 0; i < 5; i++) {
+                    for (let j = 0; j < 3; j++) {
+                        ctx.fillStyle = ['#f00', '#0f0', '#00f', '#ff0', '#f0f'][Math.floor(Math.random() * 5)];
+                        ctx.fillRect(offsetX + element.x + 5 + j * 25, element.y + 5 + i * 23, 20, 18);
+                    }
+                }
+                break;
+            case 'bed':
+                ctx.fillStyle = '#8b4513';
+                ctx.fillRect(offsetX + element.x, element.y, element.width, element.height);
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(offsetX + element.x + 5, element.y - 10, element.width - 10, 10);
+                break;
+            case 'desk':
+                ctx.fillStyle = '#8b4513';
+                ctx.fillRect(offsetX + element.x, element.y, element.width, element.height);
+                ctx.fillStyle = '#ddd';
+                ctx.fillRect(offsetX + element.x + 10, element.y - 5, 20, 5);
+                break;
+            case 'computer':
+                ctx.fillStyle = '#333';
+                ctx.fillRect(offsetX + element.x, element.y, element.width, element.height);
+                ctx.fillStyle = '#6cf';
+                ctx.fillRect(offsetX + element.x + 5, element.y + 5, element.width - 10, element.height - 10);
+                break;
+            case 'plant':
+                ctx.fillStyle = '#8b4513';
+                ctx.fillRect(offsetX + element.x + 15, element.y + 30, 10, 20);
+                ctx.fillStyle = '#0a0';
+                ctx.beginPath();
+                ctx.arc(offsetX + element.x + 20, element.y + 20, 20, 0, Math.PI * 2);
+                ctx.fill();
+                break;
+        }
+    }
+
     draw() {
         ctx.fillStyle = this.getColor();
         ctx.fillRect(this.x, this.y, this.width, this.height);
         
-        // Add some details based on obstacle type
+        // More detailed and larger labels
+        ctx.font = '12px Arial'; // Larger font
+        ctx.fillStyle = 'white'; // White text for better contrast
+        
+        // Add detailed labels with clear context
         switch (this.type) {
             case 'lab':
-                // Lab equipment details
+                // Lab equipment with more details
+                ctx.fillStyle = '#4a4a4a';
+                ctx.fillRect(this.x, this.y, this.width, this.height);
                 ctx.fillStyle = 'white';
-                ctx.fillRect(this.x + 10, this.y + 10, 10, 5);
-                // Add label
+                ctx.fillRect(this.x + 5, this.y + 5, this.width - 10, this.height - 10);
+                
+                // Larger, clearer label
                 ctx.fillStyle = 'black';
-                ctx.font = '7px Arial';
-                ctx.fillText('LAB', this.x + 5, this.y - 5);
+                ctx.font = '14px Arial';
+                ctx.fillText('LAB WORK', this.x - 10, this.y - 10);
+                
+                // Lab details
+                ctx.beginPath();
+                ctx.moveTo(this.x + 10, this.y + 15);
+                ctx.lineTo(this.x + this.width - 10, this.y + 15);
+                ctx.strokeStyle = 'black';
+                ctx.stroke();
                 break;
+            
             case 'test':
-                // Test paper details
-                ctx.fillStyle = 'white';
-                ctx.fillRect(this.x + 5, this.y + 5, 15, 20);
+                // Test paper with more texture
+                ctx.fillStyle = '#f0f0f0';
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+                ctx.strokeStyle = '#999';
+                ctx.strokeRect(this.x, this.y, this.width, this.height);
+                
+                // Larger, clearer label
                 ctx.fillStyle = 'black';
-                ctx.fillRect(this.x + 8, this.y + 8, 9, 2);
-                ctx.fillRect(this.x + 8, this.y + 12, 9, 2);
-                // Add label
-                ctx.font = '7px Arial';
-                ctx.fillText('TEST', this.x + 2, this.y - 5);
-                break;
-            case 'project':
-                // Project folder details
-                ctx.fillStyle = 'white';
-                ctx.fillRect(this.x + 3, this.y + 10, 14, 40);
-                // Add label
-                ctx.fillStyle = 'black';
-                ctx.font = '7px Arial';
-                ctx.fillText('PROJECT', this.x - 3, this.y - 5);
-                break;
-            case 'exam':
-                // Exam booklet details
-                ctx.fillStyle = 'white';
-                ctx.fillRect(this.x + 5, this.y + 5, 20, 60);
-                ctx.fillStyle = 'black';
-                for (let i = 0; i < 10; i++) {
-                    ctx.fillRect(this.x + 8, this.y + 10 + (i * 6), 14, 1);
+                ctx.font = '14px Arial';
+                ctx.fillText('TEST', this.x + 5, this.y - 10);
+                
+                // Add some "text" lines
+                for (let i = 0; i < 5; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(this.x + 5, this.y + 10 + i * 10);
+                    ctx.lineTo(this.x + this.width - 5, this.y + 10 + i * 10);
+                    ctx.strokeStyle = '#aaa';
+                    ctx.stroke();
                 }
-                // Add label
-                ctx.font = '7px Arial';
-                ctx.fillText('EXAM', this.x + 2, this.y - 5);
                 break;
-            case 'flying':
-                // Flying object (professor or textbook)
+            
+            case 'project':
+                // Project folder with more depth
+                ctx.fillStyle = '#4a4a4a';
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+                ctx.fillStyle = '#666';
+                ctx.fillRect(this.x + 5, this.y + 5, this.width - 10, this.height - 10);
+                
+                // Larger, clearer label
                 ctx.fillStyle = 'white';
-                ctx.fillRect(this.x + 5, this.y + 5, 30, 10);
-                // Add label
-                ctx.fillStyle = 'black';
-                ctx.font = '7px Arial';
-                ctx.fillText('CHEAT SHEET', this.x - 5, this.y - 5);
+                ctx.font = '14px Arial';
+                ctx.fillText('PROJECT', this.x - 5, this.y - 10);
+                
+                // Add folder tab
+                ctx.fillStyle = '#888';
+                ctx.fillRect(this.x + 10, this.y - 5, 30, 5);
+                break;
+            
+            case 'exam':
+                // Exam booklet with more detail
+                ctx.fillStyle = '#f0f0f0';
+                ctx.fillRect(this.x, this.y, this.width, this.height);
+                ctx.strokeStyle = '#999';
+                ctx.strokeRect(this.x, this.y, this.width, this.height);
+                
+                // Larger, clearer label
+                ctx.fillStyle = 'red';
+                ctx.font = '14px Arial';
+                ctx.fillText('EXAM', this.x + 5, this.y - 10);
+                
+                // Add stamped effect
+                ctx.beginPath();
+                ctx.arc(this.x + this.width - 10, this.y + 10, 10, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255,0,0,0.3)';
+                ctx.fill();
+                break;
+            
+            case 'flying':
+                // Flying object with more context
+                ctx.fillStyle = 'purple';
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y + this.height / 2);
+                ctx.lineTo(this.x + this.width, this.y);
+                ctx.lineTo(this.x + this.width, this.y + this.height);
+                ctx.closePath();
+                ctx.fill();
+                
+                // Larger, clearer label
+                ctx.fillStyle = 'white';
+                ctx.font = '14px Arial';
+                ctx.fillText('CHEAT SHEET', this.x - 20, this.y - 10);
                 break;
         }
     }
@@ -490,8 +589,9 @@ class Background {
             this.drawElement(element, this.x + this.width);
         }
     }
-    
+
     drawElement(element, offsetX) {
+        // Improved drawing method with more clear labels
         switch (element.type) {
             case 'window':
                 ctx.fillStyle = '#87ceeb';
