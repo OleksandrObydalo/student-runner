@@ -217,6 +217,10 @@ class Obstacle {
                 // Lab equipment details
                 ctx.fillStyle = 'white';
                 ctx.fillRect(this.x + 10, this.y + 10, 10, 5);
+                // Add label
+                ctx.fillStyle = 'black';
+                ctx.font = '7px Arial';
+                ctx.fillText('LAB', this.x + 5, this.y - 5);
                 break;
             case 'test':
                 // Test paper details
@@ -225,11 +229,18 @@ class Obstacle {
                 ctx.fillStyle = 'black';
                 ctx.fillRect(this.x + 8, this.y + 8, 9, 2);
                 ctx.fillRect(this.x + 8, this.y + 12, 9, 2);
+                // Add label
+                ctx.font = '7px Arial';
+                ctx.fillText('TEST', this.x + 2, this.y - 5);
                 break;
             case 'project':
                 // Project folder details
                 ctx.fillStyle = 'white';
                 ctx.fillRect(this.x + 3, this.y + 10, 14, 40);
+                // Add label
+                ctx.fillStyle = 'black';
+                ctx.font = '7px Arial';
+                ctx.fillText('PROJECT', this.x - 3, this.y - 5);
                 break;
             case 'exam':
                 // Exam booklet details
@@ -239,11 +250,18 @@ class Obstacle {
                 for (let i = 0; i < 10; i++) {
                     ctx.fillRect(this.x + 8, this.y + 10 + (i * 6), 14, 1);
                 }
+                // Add label
+                ctx.font = '7px Arial';
+                ctx.fillText('EXAM', this.x + 2, this.y - 5);
                 break;
             case 'flying':
                 // Flying object (professor or textbook)
                 ctx.fillStyle = 'white';
                 ctx.fillRect(this.x + 5, this.y + 5, 30, 10);
+                // Add label
+                ctx.fillStyle = 'black';
+                ctx.font = '7px Arial';
+                ctx.fillText('CHEAT SHEET', this.x - 5, this.y - 5);
                 break;
         }
     }
@@ -874,4 +892,3 @@ function playSound(sound) {
 
 // Initialize game when the page loads
 window.onload = init;
-
